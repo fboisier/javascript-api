@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.79.0">
+    <title>BB</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <style>
+        .content-section {
+            min-height: 2000px;
+        }
+
+        .sidebar-section {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+
+        .sidebar-item {
+            position: absolute;
+            top: 0;
+            left: 70%;
+            width: 100%;
+            height: 100%;
+        }
+
+        .make-me-sticky {
+            position: sticky;
+            top: 0;
+            padding: 0 15px;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/jquery.blockUI.js"></script>
+
+
+    <script>
+
+
+
+        $(document).ready(function () {
+
+
+            //{ message: '<h1><i class="fa fa-circle-o-notch fa-3x fa-spin" aria-hidden="true"></i><br>Cargando...</h1>' }
+            $.blockUI.defaults.message = '<i class="fa fa-circle-o-notch fa-3x fa-spin" aria-hidden="true"></i><br> Cargando...';
+            $.blockUI.defaults.css.border = '5px solid red';
+            
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+
+
+
+
+            for (let index = 1; index <= 10; index++) {
+
+                $.get("https://breakingbadapi.com/api/characters/" + index, function (data) {
+
+                    var personaje = data[0];
+
+                    $("#personajes").children().children(".row").append(` 
+                <div class="col">               
+                    <div class="card" style="width: 18rem;">
+                        <img dato="${index}"  src="${personaje.img}" class="card-img-top" alt="${personaje.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${personaje.name}</h5>
+                            <p class="card-text">${personaje.status}</p>
+                            <button dato="${index}" class="btn btn-primary btnClick"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Ver mas detalles</button>
+                        </div>
+                    </div>
+                </div>
+                `);
+
+                }, "json");
+
+
+
+            }
+
+            $(document).on("click", "#personajes img", function () {
+              
+                var id = $(this).attr("dato");
+
+                $.get("https://breakingbadapi.com/api/characters/" + id, function (data) {
+
+                    var personaje = data[0];
+
+                    $("#modalTitulo").html(personaje.name);
+
+                    $('#modalDatos').modal('show');
+
+                }, "json");
+                
+                
+               
+
+                
+
+            });
+
+
+            $(document).on("click", ".btnClick", function () {
+                var id = $(this).attr("dato");
+
+                $.get("https://breakingbadapi.com/api/characters/" + id, function (data) {
+
+                    var personaje = data[0];
+
+
+                    $("#titulo").html(personaje.name);
+                    $("#titulo2").html(personaje.status);
+                    $("#nickname").html(personaje.nickname);
+                    $("#ocupacion").html(personaje.occupation[0]);
+
+
+
+                }, "json");
+
+
+            });
+
+
+        });
+
+
+    </script>
+
+</head>
+
+<body>
+
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <h1></h1>
+        </div>
+
+        <div class="row">
+            <div id="personajes" class="col-8">
+                <div class="content-section">
+                    <div class="row">
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="detalle" class="col-4">
+                <div class="sidebar-item">
+                    <div class="jumbotron make-me-sticky">
+                        <h1 class="display-3" id="titulo">TEXTO 1 </h1>
+                        <p class="lead" id="titulo2">TEXTO 2</p>
+                        <hr class="my-2">
+                        <p>Sobrenombre: <span id="nickname"></span></p>
+                        <p>Ocupación: <span id="ocupacion"></span></p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="modal" id="modalDatos" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><span id="modalTitulo">Modal title</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</body>
+
+</html>
