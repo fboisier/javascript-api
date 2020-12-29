@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.79.0">
+    <title>Template Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            $.get("https://restcountries.eu/rest/v2", function (res) {
+
+                //console.log(res);
+
+                // for (let index = 0; index < res.length; index++) {
+                //     const pais = res[index];
+
+                //     console.log(pais.name) ;
+
+                // }
+
+                for (const pais of res) {
+
+                    //console.log(pais.languages);
+                    var idiomaUL = "<ul>";
+                    for (const idioma of pais.languages){
+                        //idiomaUL += "<li>"+idioma.name + "/" + idioma.nativeName+"</li>";
+                        
+                        idiomaUL += `<li> ${idioma.name} / ${idioma.nativeName}</li>`;
+                    }
+                    idiomaUL += "</ul>";
+
+                    
+                    var html = `
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mt-3">
+                        <div class="card">
+                            <img src="${pais.flag}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">${pais.name}</h5>
+                                <p class="card-text">Capital: ${pais.capital}</p>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Codigo Pais: ${pais.alpha2Code}</li>
+                                <li class="list-group-item">Idioma ${idiomaUL}</li>
+                                <li class="list-group-item">Población : ${pais.population}</li>
+                            </ul>
+                            <div class="card-body">
+                                <button codigo-pais="${pais.alpha2Code}"  class="btn btn-outline-primary btnMasInfo"> Mas Info </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    `;
+
+                    $("#paises").append(html);
+
+
+
+                }
+
+
+            }, "json");
+
+
+            $(document).on("click",".btnMasInfo", function(){
+
+                var pais = $(this).parent().parent().find("h5").text();
+
+                $("#modalPaises .card-title").text(pais);
+
+                console.log(pais);
+
+                var codigoPais = $(this).attr("codigo-pais");
+
+                $("#modalPaises img").attr("src","https://www.countryflags.io/" + codigoPais + "/shiny/64.png");
+
+                $("#modalPaises").modal("show");
+
+            });
+
+
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1 class="mt-4 mb-4 text-center">Paises de America!</h1>
+
+        <div id="paises" class="row">
+                
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <div id="modalPaises" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Más información del Pais</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+                <div class="card mb-3" style="max-width: 200px;">
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <img src="" alt="...">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title">Card title</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</body>
+
+</html>
